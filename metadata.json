@@ -1,0 +1,7 @@
+{
+  "name": "NutriVision AI",
+  "description": "A futuristic 3D-animated calorie tracking application powered by Gemini AI. Analyze food via camera or upload and track your daily nutrition.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
