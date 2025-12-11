@@ -1,10 +1,11 @@
+
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import Hero3D from './Hero3D';
 import Scanner from './Scanner';
 import Dashboard from './Dashboard';
 import { HistoryItem, UserProfile, FoodAnalysis, Macros } from '../types';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { Camera, Zap, Activity, Scan, ArrowRight, CheckCircle2, Send, ChevronRight, BarChart3, Database } from 'lucide-react';
+import { Camera, Zap, Activity, Scan, ArrowRight, CheckCircle2, Send, ChevronRight, BarChart3, Database, AlertCircle, RefreshCw } from 'lucide-react';
 import { analyzeFoodImage } from '../services/geminiService';
 
 interface LandingPageProps {
@@ -18,7 +19,7 @@ interface LandingPageProps {
 }
 
 // --- Shared 3D Tilt Card Component ---
-const TiltCard = ({ children, className, style }: { children?: React.ReactNode, className?: string, style?: any }) => {
+const TiltCard = ({ children, className, style, ...props }: { children?: React.ReactNode, className?: string, style?: any } & React.ComponentProps<typeof motion.div>) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -49,6 +50,7 @@ const TiltCard = ({ children, className, style }: { children?: React.ReactNode, 
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, scale, transformStyle: "preserve-3d", ...style }}
       className={`relative transition-all duration-200 ease-out perspective-1000 ${className}`}
+      {...props}
     >
       {children}
     </motion.div>
@@ -244,8 +246,11 @@ const InteractiveDemo = () => {
             {/* Card 1: Capture */}
             <TiltCard 
                 style={maskStyle}
-                className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-blue-500/20 hover:border-blue-500/50"
+                className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-blue-500/20"
             >
+                {/* Pulse Glow Border - Subtly Animated */}
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.3)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
+
                 <div className="absolute inset-0 z-0">
                     <img src="https://images.unsplash.com/photo-1516824711718-9c1e683412ac?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 transform-gpu group-hover:scale-110" alt="Capture" />
                     <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0f172a] via-white/50 dark:via-[#0f172a]/50 to-transparent" />
@@ -264,8 +269,11 @@ const InteractiveDemo = () => {
             {/* Card 2: Analyze (The Cool Laser One) */}
             <TiltCard 
                 style={maskStyle}
-                className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-emerald-500/20 hover:border-emerald-500/50"
+                className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-emerald-500/20"
             >
+                {/* Pulse Glow Border */}
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.3)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
+
                 {/* Image & Laser Effect */}
                 <div className="absolute inset-0 overflow-hidden bg-black z-0">
                     <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 transform-gpu group-hover:scale-110" alt="Scan" />
@@ -318,8 +326,11 @@ const InteractiveDemo = () => {
              {/* Card 3: Track - Updated Photo */}
              <TiltCard 
                 style={maskStyle}
-                className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-purple-500/20 hover:border-purple-500/50"
+                className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-purple-500/20"
             >
+                {/* Pulse Glow Border */}
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-purple-500/60 shadow-[0_0_30px_rgba(168,85,247,0.3)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
+
                 <div className="absolute inset-0 z-0">
                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 transform-gpu group-hover:scale-110" alt="Track" />
                     <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0f172a] via-white/50 dark:via-[#0f172a]/50 to-transparent" />
@@ -339,24 +350,32 @@ const InteractiveDemo = () => {
 
 // Contact Form Component
 const ContactForm = () => {
-    const [status, setStatus] = React.useState<'idle' | 'submitting' | 'success'>('idle');
+    const [status, setStatus] = React.useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('submitting');
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
         
         try {
-            await fetch("https://formsubmit.co/ajax/jayparmar2411@gmail.com", {
+            const response = await fetch("https://formsubmit.co/ajax/jayparmar2411@gmail.com", {
                 method: "POST",
-                body: formData
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
             });
+
+            if (!response.ok) throw new Error("Network response was not ok");
+            
             setStatus('success');
             form.reset();
         } catch (err) {
             console.error(err);
-            setStatus('idle');
+            setStatus('error');
         }
     };
 
@@ -370,9 +389,17 @@ const ContactForm = () => {
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Message Sent!</h3>
                     <p className="text-gray-500">We'll get back to you shortly.</p>
                     <button onClick={() => setStatus('idle')} className="mt-6 text-brand-primary font-bold hover:underline">Send another</button>
+                    <p className="text-xs text-orange-400 mt-4 bg-orange-500/10 p-2 rounded-lg">Important: If this is your first time, check your email to Activate the form.</p>
                 </motion.div>
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                    {/* Configuration fields for FormSubmit */}
+                    <input type="hidden" name="_subject" value="New Inquiry - NutriVision AI" />
+                    <input type="hidden" name="_template" value="table" />
+                    <input type="hidden" name="_captcha" value="false" />
+                    {/* Honey pot to prevent spam */}
+                    <input type="text" name="_honey" style={{ display: 'none' }} />
+
                     <div className="text-center mb-8">
                         <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Get in Touch</h3>
                         <p className="text-gray-500">Have questions? Send us a message.</p>
@@ -396,11 +423,15 @@ const ContactForm = () => {
                     <button 
                         disabled={status === 'submitting'}
                         type="submit" 
-                        className="w-full py-4 bg-brand-primary text-white font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors shadow-lg shadow-brand-primary/20"
+                        className={`w-full py-4 font-bold rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg ${
+                            status === 'error' 
+                            ? 'bg-red-500 hover:bg-red-600 text-white'
+                            : 'bg-brand-primary hover:bg-emerald-600 text-white shadow-brand-primary/20'
+                        }`}
                     >
-                        {status === 'submitting' ? 'Sending...' : <><Send size={18} /> Send Message</>}
+                        {status === 'submitting' ? 'Sending...' : status === 'error' ? 'Failed - Try Again' : <><Send size={18} /> Send Message</>}
                     </button>
-                    <input type="hidden" name="_captcha" value="false" />
+                    {status === 'error' && <p className="text-xs text-red-500 text-center">Failed to send message. Please check your connection.</p>}
                     <p className="text-xs text-center text-gray-400 mt-4">By sending a message, you agree to our Terms of Service.</p>
                 </form>
             )}
