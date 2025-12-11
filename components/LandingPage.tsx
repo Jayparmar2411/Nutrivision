@@ -249,7 +249,7 @@ const InteractiveDemo = () => {
                 className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-blue-500/20"
             >
                 {/* Pulse Glow Border - Subtly Animated */}
-                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-blue-500/60 shadow-[0_0_30px_rgba(59,130,246,0.3)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-blue-500/50 dark:border-blue-400/50 shadow-[0_0_25px_rgba(59,130,246,0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
 
                 <div className="absolute inset-0 z-0">
                     <img src="https://images.unsplash.com/photo-1516824711718-9c1e683412ac?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 transform-gpu group-hover:scale-110" alt="Capture" />
@@ -272,7 +272,7 @@ const InteractiveDemo = () => {
                 className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-emerald-500/20"
             >
                 {/* Pulse Glow Border */}
-                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.3)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-emerald-500/50 dark:border-emerald-400/50 shadow-[0_0_25px_rgba(16,185,129,0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
 
                 {/* Image & Laser Effect */}
                 <div className="absolute inset-0 overflow-hidden bg-black z-0">
@@ -329,7 +329,7 @@ const InteractiveDemo = () => {
                 className="group h-[420px] rounded-[2.5rem] relative overflow-hidden border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xl flex flex-col justify-end transition-all duration-300 z-0 hover:shadow-purple-500/20"
             >
                 {/* Pulse Glow Border */}
-                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-purple-500/60 shadow-[0_0_30px_rgba(168,85,247,0.3)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
+                <div className="absolute inset-0 rounded-[2.5rem] border-2 border-purple-500/50 dark:border-purple-400/50 shadow-[0_0_25px_rgba(168,85,247,0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-50 group-hover:animate-pulse" />
 
                 <div className="absolute inset-0 z-0">
                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 transform-gpu group-hover:scale-110" alt="Track" />

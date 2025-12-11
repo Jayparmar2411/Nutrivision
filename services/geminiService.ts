@@ -1,17 +1,21 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { FoodAnalysis, HistoryItem, UserProfile } from "../types";
 
-// Helper to validate the environment variable
-const getApiKey = (): string => {
-  const key = process.env.API_KEY;
-  if (!key) {
-    console.error("API_KEY is missing from environment variables.");
-    throw new Error("API Key not found. Please ensure process.env.API_KEY is set.");
-  }
-  return key;
-};
+// Helper to get a random API key from the list to avoid rate limits
+const getAIClient = () => {
+    // process.env.API_KEY is injected by Vite at build time
+    const keysString = process.env.API_KEY || '';
+    const keys = keysString.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    
+    if (keys.length === 0) {
+        console.error("No API Keys found. Please check Netlify environment variables.");
+        throw new Error("API Key missing");
+    }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // Randomly select one key from the list for rotation
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    return new GoogleGenAI({ apiKey: randomKey });
+}
 
 const GENERATION_CONFIG = {
   temperature: 0,
@@ -23,7 +27,7 @@ const GENERATION_CONFIG = {
 
 export const analyzeFoodImage = async (base64Image: string): Promise<FoodAnalysis> => {
   try {
-    // Strip header if present (e.g., "data:image/jpeg;base64,")
+    const ai = getAIClient();
     const cleanBase64 = base64Image.split(',')[1] || base64Image;
 
     const response = await ai.models.generateContent({
@@ -84,7 +88,6 @@ export const analyzeFoodImage = async (base64Image: string): Promise<FoodAnalysi
     if (!text) throw new Error("No response from AI");
 
     const data = JSON.parse(text) as FoodAnalysis;
-    // Sort ingredients to ensure deterministic behavior for future comparisons
     if (data.ingredients) data.ingredients.sort();
     else data.ingredients = [];
     
@@ -92,7 +95,7 @@ export const analyzeFoodImage = async (base64Image: string): Promise<FoodAnalysi
 
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
-    throw new Error("Failed to analyze food image.");
+    throw new Error("Failed to analyze food image. Please check API quota.");
   }
 };
 
@@ -102,12 +105,10 @@ export const updateNutritionFromIngredients = async (
   base64Image?: string
 ): Promise<Partial<FoodAnalysis>> => {
   try {
+    const ai = getAIClient();
     const parts: any[] = [];
-    
-    // Sort ingredients to ensure identical prompts yield identical results
     const sortedIngredients = [...ingredients].sort().join(", ");
 
-    // Include image if available to maintain context of portion size
     if (base64Image) {
       const cleanBase64 = base64Image.split(',')[1] || base64Image;
       parts.push({
@@ -171,6 +172,7 @@ export const updateNutritionFromIngredients = async (
 
 export const getNutritionAdvice = async (history: HistoryItem[], userProfile: UserProfile): Promise<string> => {
   try {
+    const ai = getAIClient();
     const today = new Date().toDateString();
     const todaysLogs = history.filter(h => new Date(h.timestamp).toDateString() === today);
     
@@ -206,6 +208,6 @@ export const getNutritionAdvice = async (history: HistoryItem[], userProfile: Us
     return response.text || "Could not generate advice at this time.";
   } catch (error) {
     console.error("AI Advice Error:", error);
-    return "Unable to connect to AI Coach. Please check your connection.";
+    return "Unable to connect to AI Coach.";
   }
 };
